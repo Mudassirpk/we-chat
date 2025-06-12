@@ -7,6 +7,7 @@ declare global {
     context: {
       note_add: ({ title: string, description: string }) => Promise<IPCResponse<unknown>>
       note_all: () => IPCResponse<unknown[]>
+      note_delete: (_id: string) => IPCResponse<unknown>
     }
     api: unknown
   }

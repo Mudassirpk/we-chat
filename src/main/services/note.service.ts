@@ -29,8 +29,22 @@ export const note_service = {
     return {
       success: true,
       data: notes.map((note) => {
+        // serialize the data before sending to client
         return { ...note.toObject(), _id: note._id.toString() }
       })
+    }
+  },
+  async delete(_id: string) {
+    try {
+      await Note.findByIdAndDelete(_id)
+      return {
+        success: true
+      }
+    } catch (err) {
+      console.log(err)
+      return {
+        success: false
+      }
     }
   }
 }

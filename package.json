@@ -21,6 +21,8 @@
     "build:linux": "electron-vite build && electron-builder --linux"
   },
   "build": {
+    "productName": "My Notes",
+    "artifactName": "${my-notes}.${ext}",
     "extraResources": [
       {
         "from": ".env",

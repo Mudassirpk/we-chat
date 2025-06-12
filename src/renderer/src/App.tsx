@@ -1,8 +1,18 @@
-'use client'
 import type React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import toast from 'react-hot-toast'
-import { FiFileText, FiTrash2, FiEdit3, FiMoreVertical } from 'react-icons/fi'
+import {
+  FiFileText,
+  FiTrash2,
+  FiEdit3,
+  FiMoreVertical,
+  FiBold,
+  FiItalic,
+  FiList,
+  FiLink,
+  FiCode,
+  FiUnderline
+} from 'react-icons/fi'
 
 interface Note {
   _id: string
@@ -27,6 +37,7 @@ export default function NotesApp() {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [isExpanded, setIsExpanded] = useState(false)
+  const editorRef = useRef<HTMLDivElement>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,6 +51,9 @@ export default function NotesApp() {
         setNotes([res.data as any, ...notes])
         setTitle('')
         setDescription('')
+        if (editorRef.current) {
+          editorRef.current.innerHTML = ''
+        }
         setIsExpanded(false)
         toast.success('Note added successfully')
       } else {
@@ -58,8 +72,14 @@ export default function NotesApp() {
     getNotes()
   }, [])
 
-  const deleteNote = (id: string) => {
-    setNotes(notes.filter((note) => note._id !== id))
+  const deleteNote = async (id: string) => {
+    const res = await window.context.note_delete(id)
+    if (res.success) {
+      setNotes(notes.filter((note) => note._id !== id))
+      toast.success('Note deleted successfully')
+    } else {
+      toast.error('Failed to delete note')
+    }
   }
 
   const formatDate = (date: Date) => {
@@ -74,6 +94,82 @@ export default function NotesApp() {
 
   const getRandomColor = (index: number) => {
     return noteColors[index % noteColors.length]
+  }
+
+  // WYSIWYG formatting functions
+  const execCommand = (command: string, value?: string) => {
+    document.execCommand(command, false, value)
+    editorRef.current?.focus()
+  }
+
+  const formatBold = () => execCommand('bold')
+  const formatItalic = () => execCommand('italic')
+  const formatUnderline = () => execCommand('underline')
+
+  const formatCode = () => {
+    const selection = window.getSelection()
+    if (selection && selection.rangeCount > 0) {
+      const range = selection.getRangeAt(0)
+      const selectedText = range.toString()
+
+      if (selectedText) {
+        const codeElement = document.createElement('code')
+        codeElement.className = 'bg-gray-200 px-1 py-0.5 rounded text-sm font-mono'
+        codeElement.textContent = selectedText
+
+        range.deleteContents()
+        range.insertNode(codeElement)
+
+        // Clear selection
+        selection.removeAllRanges()
+        editorRef.current?.focus()
+      }
+    }
+  }
+
+  const formatLink = () => {
+    const url = prompt('Enter URL:')
+    if (url) {
+      execCommand('createLink', url)
+    }
+  }
+
+  const formatList = () => execCommand('insertUnorderedList')
+
+  const handleEditorInput = () => {
+    if (editorRef.current) {
+      setDescription(editorRef.current.innerHTML)
+    }
+  }
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      switch (e.key) {
+        case 'b':
+          e.preventDefault()
+          formatBold()
+          break
+        case 'i':
+          e.preventDefault()
+          formatItalic()
+          break
+        case 'u':
+          e.preventDefault()
+          formatUnderline()
+          break
+        case 'k':
+          e.preventDefault()
+          formatLink()
+          break
+      }
+    }
+  }
+
+  // Convert HTML to plain text for validation
+  const getPlainText = (html: string) => {
+    const div = document.createElement('div')
+    div.innerHTML = html
+    return div.textContent || div.innerText || ''
   }
 
   return (
@@ -93,7 +189,7 @@ export default function NotesApp() {
       </header>
 
       <div className="max-w-7xl mx-auto px-4 py-8">
-        {/* Create Note Form - Google Keep Style */}
+        {/* Create Note Form - Google Keep Style with WYSIWYG Editor */}
         <div className="max-w-2xl mx-auto mb-8">
           {!isExpanded ? (
             <div
@@ -116,13 +212,75 @@ export default function NotesApp() {
                   className="w-full text-base font-medium placeholder-gray-500 border-none outline-none resize-none"
                   autoFocus
                 />
-                <textarea
-                  placeholder="Take a note..."
-                  value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                  rows={3}
-                  className="w-full text-sm placeholder-gray-500 border-none outline-none resize-none"
+
+                {/* WYSIWYG Toolbar */}
+                <div className="flex items-center gap-1 py-2 border-b border-gray-200">
+                  <button
+                    type="button"
+                    onClick={formatBold}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Bold (Ctrl+B)"
+                  >
+                    <FiBold className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={formatItalic}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Italic (Ctrl+I)"
+                  >
+                    <FiItalic className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={formatUnderline}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Underline (Ctrl+U)"
+                  >
+                    <FiUnderline className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={formatCode}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Code"
+                  >
+                    <FiCode className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={formatLink}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Link (Ctrl+K)"
+                  >
+                    <FiLink className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button
+                    type="button"
+                    onClick={formatList}
+                    className="p-2 hover:bg-gray-100 rounded transition-colors"
+                    title="Bullet List"
+                  >
+                    <FiList className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <div className="ml-auto text-xs text-gray-400">WYSIWYG Editor</div>
+                </div>
+
+                {/* WYSIWYG Editor */}
+                <div
+                  ref={editorRef}
+                  contentEditable
+                  onInput={handleEditorInput}
+                  onKeyDown={handleKeyDown}
+                  className="w-full min-h-[100px] text-sm text-gray-700 border-none outline-none resize-none leading-relaxed p-2 rounded focus:bg-gray-50 transition-colors"
+                  style={{
+                    wordBreak: 'break-word',
+                    whiteSpace: 'pre-wrap'
+                  }}
+                  data-placeholder="Start writing your note... Select text and use toolbar to format"
+                  suppressContentEditableWarning={true}
                 />
+
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center gap-2">
                     {/* Placeholder for additional tools */}
@@ -134,6 +292,9 @@ export default function NotesApp() {
                         setIsExpanded(false)
                         setTitle('')
                         setDescription('')
+                        if (editorRef.current) {
+                          editorRef.current.innerHTML = ''
+                        }
                       }}
                       className="px-4 py-1 text-sm text-gray-600 hover:bg-gray-100 rounded"
                     >
@@ -141,7 +302,7 @@ export default function NotesApp() {
                     </button>
                     <button
                       type="submit"
-                      disabled={!title.trim() || !description.trim()}
+                      disabled={!title.trim() || !getPlainText(description).trim()}
                       className="px-4 py-1 text-sm bg-yellow-400 hover:bg-yellow-500 disabled:bg-gray-200 disabled:text-gray-400 text-yellow-900 rounded font-medium transition-colors"
                     >
                       Done
@@ -181,9 +342,10 @@ export default function NotesApp() {
                   </div>
                 </div>
 
-                <p className="text-gray-700 text-sm leading-relaxed mb-3 whitespace-pre-wrap">
-                  {note.description}
-                </p>
+                <div
+                  className="text-gray-700 text-sm leading-relaxed mb-3 prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={{ __html: note.description }}
+                />
 
                 <div className="flex items-center justify-between text-xs text-gray-500">
                   <span>{formatDate(new Date(note.createdAt))}</span>
