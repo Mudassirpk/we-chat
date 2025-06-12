@@ -19,5 +19,18 @@ export const note_service = {
         success: false
       }
     }
+  },
+
+  all: async () => {
+    const notes = await Note.find().sort({
+      createdAt: -1
+    })
+
+    return {
+      success: true,
+      data: notes.map((note) => {
+        return { ...note.toObject(), _id: note._id.toString() }
+      })
+    }
   }
 }

@@ -31,9 +31,14 @@
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.1",
     "@electron-toolkit/utils": "^4.0.0",
+    "@tailwindcss/vite": "^4.1.10",
+    "@tanstack/react-query": "^5.80.7",
     "dotenv": "^16.5.0",
     "electron-updater": "^6.3.9",
-    "mongoose": "^8.15.1"
+    "mongoose": "^8.15.1",
+    "react-hot-toast": "^2.5.2",
+    "react-icons": "^5.5.0",
+    "tailwindcss": "^4.1.10"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
