@@ -6,6 +6,7 @@ import { services } from './services'
 import { connect_database } from './lib/db/connection'
 import dotenv from 'dotenv'
 import * as path from 'path'
+import { watch_note_collection } from './lib/db/watch_note_collection'
 
 const isDev = !app.isPackaged
 const envPath = isDev
@@ -65,6 +66,7 @@ app.whenReady().then(() => {
   ipcMain.handle('method', () => console.log('IPC Method Called'))
 
   connect_database()
+  watch_note_collection()
   for (const controller_name of Object.keys(services)) {
     for (const service_name of Object.keys(services[controller_name])) {
       const global_service_name = `${controller_name}_${service_name}`
