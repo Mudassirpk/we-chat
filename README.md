@@ -1,6 +1,6 @@
 # Important
 
-## Naming you services in - main/services/index.ts
+## Naming your services in - main/services/index.ts
 
 ```typescript
 export const services = { your_controller_name: 'object_containing_services' }
