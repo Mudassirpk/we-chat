@@ -146,7 +146,7 @@ export default function ChatInterface() {
               {/* Username and Timestamp */}
               <div className="flex items-center space-x-2">
                 <span className={`font-semibold text-sm ${getUserColor(message.senderChatId)}`}>
-                  {message.sender}
+                  {message.senderChatId === user?.id ? 'You' : message.sender}
                 </span>
                 <span className="text-xs text-gray-500">
                   {formatTime(new Date(message.createdAt))}
