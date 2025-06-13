@@ -9,6 +9,9 @@ declare global {
       note_all: () => IPCResponse<unknown[]>
       note_delete: (_id: string) => IPCResponse<unknown>
     }
+    eventsNote: {
+      update: (cb) => unknown
+    }
     api: unknown
   }
 }

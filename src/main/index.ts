@@ -38,6 +38,8 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  watch_note_collection(mainWindow)
+
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
@@ -66,7 +68,6 @@ app.whenReady().then(() => {
   ipcMain.handle('method', () => console.log('IPC Method Called'))
 
   connect_database()
-  watch_note_collection()
   for (const controller_name of Object.keys(services)) {
     for (const service_name of Object.keys(services[controller_name])) {
       const global_service_name = `${controller_name}_${service_name}`

@@ -14,6 +14,9 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('api', api)
     // this will invoke all the services defined in - main/services
     contextBridge.exposeInMainWorld('context', get_services_to_invoke(ipcRenderer))
+    contextBridge.exposeInMainWorld('eventsNote', {
+      update: (cb) => ipcRenderer.on('new-note', (event, data) => cb(data))
+    })
   } catch (error) {
     console.error(error)
   }

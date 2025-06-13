@@ -172,6 +172,12 @@ export default function NotesApp() {
     return div.textContent || div.innerText || ''
   }
 
+  useEffect(() => {
+    window.eventsNote.update((data) => {
+      console.log('data form event: ', data)
+    })
+  }, [])
+
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
