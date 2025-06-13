@@ -6,7 +6,7 @@ import { services } from './services'
 import { connect_database } from './lib/db/connection'
 import dotenv from 'dotenv'
 import * as path from 'path'
-import { watch_chat_collection, watch_note_collection } from './lib/db/watch_note_collection'
+import { watch_chat_collection } from './lib/db/watch_note_collection'
 
 const isDev = !app.isPackaged
 const envPath = isDev
@@ -58,6 +58,7 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
+  watch_chat_collection(mainWindow)
   watch_chat_collection(mainWindow)
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
