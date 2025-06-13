@@ -134,17 +134,15 @@ export default function ChatInterface() {
               console.log('Notification Permision: ', permission)
             })
 
-            if ('Notification' in window && Notification.permission === 'granted') {
-              const notification = new Notification('hello not', {
-                body: 'body',
-                icon: './assets/icon.png',
-                badge: './assets/badge.png'
-              })
+            const notification = new Notification('hello not', {
+              body: 'body',
+              icon: './assets/icon.png',
+              badge: './assets/badge.png'
+            })
 
-              notification.onclick = () => {
-                window.focus()
-                notification.close()
-              }
+            notification.onclick = () => {
+              window.focus()
+              notification.close()
             }
           }
         }}
