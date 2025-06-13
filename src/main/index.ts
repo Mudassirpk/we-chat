@@ -8,7 +8,7 @@ import dotenv from 'dotenv'
 import * as path from 'path'
 import { watch_chat_collection } from './lib/db/watch_note_collection'
 import { notification_service } from './services/notification.service'
-
+let mainWindow: BrowserWindow | null = null
 const isDev = !app.isPackaged
 const envPath = isDev
   ? path.resolve(__dirname, '../../.env') // dev mode (e.g. /src/main/)
@@ -30,7 +30,7 @@ const isDebugMode =
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -45,12 +45,9 @@ function createWindow(): void {
   })
 
   mainWindow.on('ready-to-show', () => {
-    mainWindow.show()
-    ipcMain.handle('chat_os_notification', (event, data: { title: string; message: string }) => {
-      notification_service.os_notification({ title: data.title, message: data.message, mainWindow })
-    })
+    mainWindow?.show()
     if (isDebugMode) {
-      mainWindow.webContents.openDevTools()
+      mainWindow?.webContents.openDevTools()
       console.log('Debug mode enabled')
     }
   })
@@ -97,6 +94,16 @@ app.whenReady().then(() => {
       )
     }
   }
+  ipcMain.handle('chat_os_notification', (event, data: { title: string; message: string }) => {
+    console.log('con: data -> ', data)
+    if (!data || typeof data.title !== 'string' || typeof data.message !== 'string') {
+      console.warn('chat_os_notification called with invalid data:', data)
+      return
+    }
+    if (mainWindow) {
+      notification_service.os_notification({ title: data.title, message: data.message, mainWindow })
+    }
+  })
 
   createWindow()
 

@@ -81,7 +81,7 @@ export default function ChatInterface() {
   const insertEmoji = (emoji: string) => {
     setNewMessage((prev) => prev + emoji)
   }
-
+  console.log(window.context)
   // Handle text formatting
   const formatText = (command: string) => {
     document.execCommand(command, false, undefined)

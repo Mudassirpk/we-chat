@@ -22,7 +22,7 @@ if (process.contextIsolated) {
         })
       },
 
-      chat_os_notification: ipcRenderer.invoke('chat_os_notification')
+      chat_os_notification: (data: any) => ipcRenderer.invoke('chat_os_notification', data)
     })
 
     contextBridge.exposeInMainWorld('events', {

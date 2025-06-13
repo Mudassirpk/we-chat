@@ -11,6 +11,7 @@ export const notification_service = {
     mainWindow: BrowserWindow
   }) {
     if (Notification.isSupported()) {
+      console.log('notification supported')
       const notification = new Notification({
         title,
         body: message
@@ -33,6 +34,7 @@ export const notification_service = {
         })
       })
     }
+    console.log('notification rejected')
     return Promise.resolve('not-supported')
   }
 }
