@@ -26,6 +26,7 @@ export const chat_services = {
     }
   },
   async all() {
-    return await Message.find()
+    const messages = await Message.find()
+    return messages.map((m) => ({ ...m.toObject(), _id: m.toObject()._id.toString() }))
   }
 }

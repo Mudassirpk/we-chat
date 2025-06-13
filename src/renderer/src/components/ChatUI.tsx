@@ -4,7 +4,7 @@ import type React from 'react'
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router'
 
-interface Message {
+export interface Message {
   _id: string
   createdAt: string
   message: string
@@ -96,16 +96,23 @@ export default function ChatInterface() {
     }
   }
 
+  async function getAllMessages() {
+    const res = await window.context.chat_all()
+    setMessages(res)
+  }
+
   useEffect(() => {
     if (!user) {
       navigate('/')
     }
 
+    getAllMessages()
+
     window.context.new_message(handleIncommingMessage)
   }, [])
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 min-h-dvh flex flex-col">
+    <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-full max-h-dvh flex flex-col">
       {/* Chat Header */}
       <div className="bg-gray-100 px-4 py-3 rounded-t-lg border-b border-gray-200">
         <h2 className="text-lg font-semibold text-gray-800">Team Chat</h2>
@@ -115,7 +122,10 @@ export default function ChatInterface() {
       {/* Messages Container */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((message) => (
-          <div key={message._id} className="flex flex-col space-y-1">
+          <div
+            key={message._id}
+            className={`flex flex-col space-y-1 ${message.senderChatId === user?.id && 'float-right'}`}
+          >
             {/* Username and Timestamp */}
             <div className="flex items-center space-x-2">
               <span className={`font-semibold text-sm ${getUserColor(message._id)}`}>
