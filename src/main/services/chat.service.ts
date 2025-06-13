@@ -24,5 +24,8 @@ export const chat_services = {
     } catch (error) {
       return { success: false }
     }
+  },
+  async all() {
+    return await Message.find()
   }
 }
