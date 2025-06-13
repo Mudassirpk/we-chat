@@ -1,7 +1,7 @@
 import { useChat } from '@renderer/store/ChatProvider'
 import type React from 'react'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router'
 
 export interface Message {
@@ -112,6 +112,13 @@ export default function ChatInterface() {
     window.context.new_message(handleIncommingMessage)
   }, [])
 
+  const lastRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    lastRef?.current?.scrollIntoView({
+      behavior: 'smooth'
+    })
+  }, [messages])
+
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-full max-h-dvh flex flex-col">
       {/* Chat Header */}
@@ -146,6 +153,7 @@ export default function ChatInterface() {
             </div>
           </div>
         ))}
+        <div id="last" ref={lastRef}></div>
       </div>
 
       {/* Message Input Area */}
