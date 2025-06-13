@@ -33,6 +33,7 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([])
   const [newMessage, setNewMessage] = useState('')
   const navigate = useNavigate()
+  const [loading, setLoading] = useState(false)
 
   // Get color for username based on hash
   const getUserColor = (username: string) => {
@@ -98,8 +99,10 @@ export default function ChatInterface() {
   }
 
   async function getAllMessages() {
+    setLoading(true)
     const res = await window.context.chat_all()
     setMessages(res)
+    setLoading(false)
   }
 
   useEffect(() => {
@@ -132,27 +135,31 @@ export default function ChatInterface() {
 
       {/* Messages Container */}
       <div className="flex-1 flex flex-col gap-4 overflow-y-auto p-4">
-        {messages.map((message) => (
-          <div
-            key={message._id}
-            className={`flex flex-col space-y-1 ${message.senderChatId === user?.id && 'self-end'}`}
-          >
-            {/* Username and Timestamp */}
-            <div className="flex items-center space-x-2">
-              <span className={`font-semibold text-sm ${getUserColor(message.senderChatId)}`}>
-                {message.sender}
-              </span>
-              <span className="text-xs text-gray-500">
-                {formatTime(new Date(message.createdAt))}
-              </span>
-            </div>
+        {loading ? (
+          <div className="p-4 text-center w-full">Loading messages.....</div>
+        ) : (
+          messages.map((message) => (
+            <div
+              key={message._id}
+              className={`flex flex-col space-y-1 ${message.senderChatId === user?.id && 'self-end'}`}
+            >
+              {/* Username and Timestamp */}
+              <div className="flex items-center space-x-2">
+                <span className={`font-semibold text-sm ${getUserColor(message.senderChatId)}`}>
+                  {message.sender}
+                </span>
+                <span className="text-xs text-gray-500">
+                  {formatTime(new Date(message.createdAt))}
+                </span>
+              </div>
 
-            {/* Message Content */}
-            <div className="bg-gray-50 rounded-lg px-3 py-2 max-w-md">
-              <p className="text-gray-800 text-sm leading-relaxed">{message.message}</p>
+              {/* Message Content */}
+              <div className="bg-gray-50 rounded-lg px-3 py-2 max-w-md">
+                <p className="text-gray-800 text-sm leading-relaxed">{message.message}</p>
+              </div>
             </div>
-          </div>
-        ))}
+          ))
+        )}
         <div id="last" ref={lastRef}></div>
       </div>
 
