@@ -16,12 +16,10 @@ export const query_client = new QueryClient({
 })
 
 createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <ChatProvider>
-      <QueryClientProvider client={query_client}>
-        <App />
-      </QueryClientProvider>
-    </ChatProvider>
+  <ChatProvider>
+    <QueryClientProvider client={query_client}>
+      <App />
+    </QueryClientProvider>
     <Toaster />
-  </StrictMode>
+  </ChatProvider>
 )

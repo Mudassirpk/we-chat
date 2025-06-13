@@ -18,7 +18,6 @@ if (process.contextIsolated) {
 
       new_message: (callback) => {
         ipcRenderer.on('new_message', (event, data) => {
-          console.log('new message event from main: ', event, data)
           callback(data) // Call the callback with the data
         })
       }

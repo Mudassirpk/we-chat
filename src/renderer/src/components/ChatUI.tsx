@@ -87,9 +87,12 @@ export default function ChatInterface() {
   }
 
   function handleIncommingMessage({ doc: incomming_message }: { doc: Message }) {
+    console.log(incomming_message.senderChatId, ' : ', user?.id)
     if (incomming_message.senderChatId !== user?.id) {
       const message_present = messages.find((m) => m._id === incomming_message._id)
+      console.log('mp: ', message_present)
       if (!message_present) {
+        setMessages((prev) => prev.filter((pm) => pm._id !== incomming_message._id))
         setMessages((prev) => [...prev, incomming_message])
       }
     }
