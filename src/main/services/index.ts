@@ -1,3 +1,3 @@
-import { note_service } from './note.service'
+import { chat_services } from './chat.service'
 
-export const services = { note: note_service }
+export const services = { chat: chat_services }

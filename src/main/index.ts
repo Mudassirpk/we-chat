@@ -6,7 +6,7 @@ import { services } from './services'
 import { connect_database } from './lib/db/connection'
 import dotenv from 'dotenv'
 import * as path from 'path'
-import { watch_note_collection } from './lib/db/watch_note_collection'
+import { watch_chat_collection, watch_note_collection } from './lib/db/watch_note_collection'
 
 const isDev = !app.isPackaged
 const envPath = isDev
@@ -14,6 +14,18 @@ const envPath = isDev
   : path.resolve(process.resourcesPath, '.env') // prod mode (e.g. after build)
 
 dotenv.config({ path: envPath })
+
+process.on('unhandledRejection', (reason: any, promise) => {
+  if (reason?.toString().includes('Autofill')) {
+    console.log('Suppressed autofill error:', reason)
+    return
+  }
+  console.error('Unhandled Rejection at:', promise, 'reason:', reason)
+})
+const isDebugMode =
+  process.argv.includes('--debug') ||
+  process.argv.includes('--dev') ||
+  process.argv.includes('--debug-mode')
 
 function createWindow(): void {
   // Create the browser window.
@@ -25,12 +37,20 @@ function createWindow(): void {
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
-      sandbox: false
+      sandbox: false,
+      devTools: isDebugMode,
+      nodeIntegration: false,
+      contextIsolation: true
     }
   })
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
+
+    if (isDebugMode) {
+      mainWindow.webContents.openDevTools()
+      console.log('Debug mode enabled')
+    }
   })
 
   mainWindow.webContents.setWindowOpenHandler((details) => {
@@ -38,8 +58,7 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  watch_note_collection(mainWindow)
-
+  watch_chat_collection(mainWindow)
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {

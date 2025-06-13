@@ -7,7 +7,7 @@ export async function connect_database(): Promise<void> {
   }
   try {
     await mongoose.connect(mongo_uri, {
-      dbName: 'notes'
+      dbName: 'we-chat'
     })
     console.log('Database connected')
   } catch (error) {

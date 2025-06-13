@@ -5,12 +5,11 @@ declare global {
   interface Window {
     electron: ElectronAPI
     context: {
-      note_add: ({ title: string, description: string }) => Promise<IPCResponse<unknown>>
-      note_all: () => IPCResponse<unknown[]>
-      note_delete: (_id: string) => IPCResponse<unknown>
+      chat_create_message: ({ userName, chatId, message }) => IPCResponse<unknown>
+      new_message: (cb) => unknown
     }
-    eventsNote: {
-      update: (cb) => unknown
+    events: {
+      new_message: (cb) => unknown
     }
     api: unknown
   }

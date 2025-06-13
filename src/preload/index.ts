@@ -13,9 +13,24 @@ if (process.contextIsolated) {
     contextBridge.exposeInMainWorld('electron', electronAPI)
     contextBridge.exposeInMainWorld('api', api)
     // this will invoke all the services defined in - main/services
-    contextBridge.exposeInMainWorld('context', get_services_to_invoke(ipcRenderer))
-    contextBridge.exposeInMainWorld('eventsNote', {
-      update: (cb) => ipcRenderer.on('new-note', (event, data) => cb(data))
+    contextBridge.exposeInMainWorld('context', {
+      ...get_services_to_invoke(ipcRenderer),
+
+      new_message: (callback) => {
+        ipcRenderer.on('new_message', (event, data) => {
+          console.log('new message event from main: ', event, data)
+          callback(data) // Call the callback with the data
+        })
+      }
+    })
+
+    contextBridge.exposeInMainWorld('events', {
+      new_message: (cb) =>
+        ipcRenderer.on('new_message', (event, data) => {
+          console.log('new message event from main')
+          console.log(event, data)
+          return cb(data)
+        })
     })
   } catch (error) {
     console.error(error)
