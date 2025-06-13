@@ -114,9 +114,12 @@ export default function ChatInterface() {
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-full max-h-dvh flex flex-col">
       {/* Chat Header */}
-      <div className="bg-gray-100 px-4 py-3 rounded-t-lg border-b border-gray-200">
-        <h2 className="text-lg font-semibold text-gray-800">Team Chat</h2>
-        <p className="text-sm text-gray-600">{messages.length} messages</p>
+      <div className="bg-gray-100 flex justify-between items-center px-4 py-3 rounded-t-lg border-b border-gray-200">
+        <div className="flex gap-4 items-center">
+          <h2 className="text-lg font-semibold text-gray-800">Team Chat</h2>
+          <p className="text-sm text-gray-600">{messages.length} messages</p>
+        </div>
+        <p className="text-2xl text-indigo-700">{user?.name}</p>
       </div>
 
       {/* Messages Container */}
