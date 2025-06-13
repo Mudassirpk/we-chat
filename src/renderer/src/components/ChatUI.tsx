@@ -127,6 +127,16 @@ export default function ChatInterface() {
 
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-full max-h-dvh flex flex-col">
+      <button
+        onClick={async () => {
+          await window.context.chat_os_notification({
+            title: 'lsdkfjsdlkfj',
+            message: 'sdflkjsdfkj'
+          })
+        }}
+      >
+        Show Notification
+      </button>
       {/* Chat Header */}
       <div className="bg-gray-100 flex justify-between items-center px-4 py-3 rounded-t-lg border-b border-gray-200">
         <div className="flex gap-4 items-center">
