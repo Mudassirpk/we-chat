@@ -87,6 +87,7 @@ export default function ChatInterface() {
   }
 
   function handleIncommingMessage({ doc: incomming_message }: { doc: Message }) {
+    console.log('incomming message: ', incomming_message.message)
     if (incomming_message.senderChatId !== user?.id) {
       const message_present = messages.find((m) => m._id === incomming_message._id)
       if (!message_present) {
@@ -123,15 +124,15 @@ export default function ChatInterface() {
       </div>
 
       {/* Messages Container */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3">
+      <div className="flex-1 flex flex-col gap-4 overflow-y-auto p-4">
         {messages.map((message) => (
           <div
             key={message._id}
-            className={`flex flex-col space-y-1 ${message.senderChatId === user?.id && 'float-right'}`}
+            className={`flex flex-col space-y-1 ${message.senderChatId === user?.id && 'self-end'}`}
           >
             {/* Username and Timestamp */}
             <div className="flex items-center space-x-2">
-              <span className={`font-semibold text-sm ${getUserColor(message._id)}`}>
+              <span className={`font-semibold text-sm ${getUserColor(message.senderChatId)}`}>
                 {message.sender}
               </span>
               <span className="text-xs text-gray-500">
