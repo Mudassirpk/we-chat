@@ -38,7 +38,6 @@ function createWindow(): void {
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: false,
-      devTools: isDebugMode,
       nodeIntegration: false,
       contextIsolation: true
     }
@@ -58,7 +57,6 @@ function createWindow(): void {
     return { action: 'deny' }
   })
 
-  watch_chat_collection(mainWindow)
   watch_chat_collection(mainWindow)
   // HMR for renderer base on electron-vite cli.
   // Load the remote URL for development or the local html file for production.
