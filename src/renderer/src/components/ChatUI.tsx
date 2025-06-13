@@ -129,10 +129,24 @@ export default function ChatInterface() {
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 h-full max-h-dvh flex flex-col">
       <button
         onClick={async () => {
-          await window.context.chat_os_notification({
-            title: 'lsdkfjsdlkfj',
-            message: 'sdflkjsdfkj'
-          })
+          if ('Notification' in window) {
+            Notification.requestPermission().then((permission) => {
+              console.log('Notification Permision: ', permission)
+            })
+
+            if ('Notification' in window && Notification.permission === 'granted') {
+              const notification = new Notification('hello not', {
+                body: 'body',
+                icon: './assets/icon.png',
+                badge: './assets/badge.png'
+              })
+
+              notification.onclick = () => {
+                window.focus()
+                notification.close()
+              }
+            }
+          }
         }}
       >
         Show Notification
