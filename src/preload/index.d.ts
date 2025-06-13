@@ -9,6 +9,7 @@ declare global {
       chat_create_message: ({ userName, chatId, message }) => IPCResponse<unknown>
       new_message: (cb) => unknown
       chat_all: () => Message[]
+      notification_os_notification: ({ title: string, message: string }) => void
     }
     events: {
       new_message: (cb) => unknown

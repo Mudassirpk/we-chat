@@ -8,6 +8,8 @@ import dotenv from 'dotenv'
 import * as path from 'path'
 import { watch_chat_collection } from './lib/db/watch_note_collection'
 
+export let mainWindow: BrowserWindow | null = null
+
 const isDev = !app.isPackaged
 const envPath = isDev
   ? path.resolve(__dirname, '../../.env') // dev mode (e.g. /src/main/)
@@ -29,7 +31,7 @@ const isDebugMode =
 
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,

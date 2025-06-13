@@ -87,13 +87,16 @@ export default function ChatInterface() {
     document.execCommand(command, false, undefined)
   }
 
-  function handleIncommingMessage({ doc: incomming_message }: { doc: Message }) {
-    console.log('incomming message: ', incomming_message.message)
+  async function handleIncommingMessage({ doc: incomming_message }: { doc: Message }) {
     if (incomming_message.senderChatId !== user?.id) {
       const message_present = messages.find((m) => m._id === incomming_message._id)
       if (!message_present) {
         setMessages((prev) => prev.filter((pm) => pm._id !== incomming_message._id))
         setMessages((prev) => [...prev, incomming_message])
+        await window.context.notification_os_notification({
+          title: incomming_message.sender,
+          message: incomming_message.message
+        })
       }
     }
   }
