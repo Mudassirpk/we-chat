@@ -20,7 +20,9 @@ if (process.contextIsolated) {
         ipcRenderer.on('new_message', (_event, data) => {
           callback(data) // Call the callback with the data
         })
-      }
+      },
+
+      chat_os_notification: ipcRenderer.invoke('chat_os_notification')
     })
 
     contextBridge.exposeInMainWorld('events', {

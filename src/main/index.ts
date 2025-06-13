@@ -7,8 +7,7 @@ import { connect_database } from './lib/db/connection'
 import dotenv from 'dotenv'
 import * as path from 'path'
 import { watch_chat_collection } from './lib/db/watch_note_collection'
-
-export let mainWindow: BrowserWindow | null = null
+import { notification_service } from './services/notification.service'
 
 const isDev = !app.isPackaged
 const envPath = isDev
@@ -31,7 +30,7 @@ const isDebugMode =
 
 function createWindow(): void {
   // Create the browser window.
-  mainWindow = new BrowserWindow({
+  const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
     show: false,
@@ -47,7 +46,9 @@ function createWindow(): void {
 
   mainWindow.on('ready-to-show', () => {
     mainWindow.show()
-
+    ipcMain.handle('chat_os_notification', (event, data: { title: string; message: string }) => {
+      notification_service.os_notification({ title: data.title, message: data.message, mainWindow })
+    })
     if (isDebugMode) {
       mainWindow.webContents.openDevTools()
       console.log('Debug mode enabled')

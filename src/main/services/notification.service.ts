@@ -1,8 +1,15 @@
-import { Notification } from 'electron'
-import { mainWindow } from '..'
+import { BrowserWindow, Notification } from 'electron'
 
 export const notification_service = {
-  os_notification({ title, message }: { title: string; message: string }) {
+  os_notification({
+    title,
+    message,
+    mainWindow
+  }: {
+    title: string
+    message: string
+    mainWindow: BrowserWindow
+  }) {
     if (Notification.isSupported()) {
       const notification = new Notification({
         title,

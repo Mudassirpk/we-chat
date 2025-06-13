@@ -1,4 +1,6 @@
 import { Message } from '../lib/db/models/Message'
+import { Notification } from 'electron'
+import { mainWindow } from '..'
 
 export const chat_services = {
   create_message: async ({

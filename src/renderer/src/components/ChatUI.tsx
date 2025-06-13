@@ -93,7 +93,7 @@ export default function ChatInterface() {
       if (!message_present) {
         setMessages((prev) => prev.filter((pm) => pm._id !== incomming_message._id))
         setMessages((prev) => [...prev, incomming_message])
-        await window.context.notification_os_notification({
+        await window.context.chat_os_notification({
           title: incomming_message.sender,
           message: incomming_message.message
         })
@@ -115,7 +115,7 @@ export default function ChatInterface() {
 
     getAllMessages()
 
-    window.context.new_message(handleIncommingMessage)
+    window.context?.new_message(handleIncommingMessage)
   }, [])
 
   const lastRef = useRef<HTMLDivElement>(null)
