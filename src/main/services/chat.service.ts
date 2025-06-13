@@ -16,10 +16,10 @@ export const chat_services = {
         senderChatId: chatId,
         message
       })
-
+      const objectMessage = new_message.toObject()
       return {
         success: true,
-        data: new_message.toObject()
+        data: { ...objectMessage, _id: objectMessage._id.toString() }
       }
     } catch (error) {
       return { success: false }
