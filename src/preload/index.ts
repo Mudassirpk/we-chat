@@ -17,7 +17,7 @@ if (process.contextIsolated) {
       ...get_services_to_invoke(ipcRenderer),
 
       new_message: (callback) => {
-        ipcRenderer.on('new_message', (event, data) => {
+        ipcRenderer.on('new_message', (_event, data) => {
           callback(data) // Call the callback with the data
         })
       }
